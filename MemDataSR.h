@@ -11,13 +11,10 @@
 #include <ctime>
 
 typedef struct{
-	int et_sec;				// seconds (0-59)
-	int et_min;				// minutes (0-59)
-	int et_hour;			// hours (0-23)
-} ExpandTime;
-
-typedef struct{
 	int hour;				// hour block
+	int day;				// day wrt to localtime
+	int month;				// month wrt to localtime
+	int year;				// year wrt to localtime
 	char *tmStamp;			// timestamp of data being recorded
 	int magnitude;			// largest magnitude of events
 	int numEvent;			// number of exceeding threshold events
@@ -34,5 +31,8 @@ binData sortBin(int *data);
 
 // Find and return the largest number in the data array
 int getMax(int *data);
+
+// Sort bin data into a file and return file path;
+char *binFile(binData *bin);
 
 #endif

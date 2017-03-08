@@ -25,5 +25,7 @@ int main (void){
 	cout << "Largest Magnitude: " << bin.magnitude << endl;
 	cout << "Number of Events: " << bin.numEvent << endl;
 
+	
+
 	return 0;
 }

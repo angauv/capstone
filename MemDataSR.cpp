@@ -10,6 +10,7 @@
 #include <iostream>
 #include <fstream>
 #include <ctime>
+#include <string>
 
 using namespace std;
 
@@ -81,4 +82,34 @@ int getMax(int *data){
 			max = *data;
 	}
 	return max;
+}
+
+// Store bin data in a file/database
+char *binFile(binData *bin){
+	static char *path;
+	if (bin->hour == 0)
+		sprintf(path, "%d_%d_%d.csv", bin->day, bin->month, bin->year);
+
+	ofstream binFile(NULL);
+
+	chkmkFile(path);
+
+	binFile.open(path,ios::app);
+	binFile << "%d,%d,%d,%s" << bin->hour, bin->magnitude, bin->numEvent, bin->tmStamp << endl;
+	binFile.close;
+
+	return path;
+}
+
+void chkmkFile(const char *path){
+	ifstream ifs;
+	ofstream ofs;
+
+	if (ifs.open(path, ios::in).good())
+		ifs.close();
+	else{
+		ofs.open(path, ios::out);
+		ofs << "Hour,Magnitude,#Events,Timestamp\n";
+		ofs.close();
+	}
 }
