@@ -1,5 +1,10 @@
 /*
+	Author: Andy Ngauv
+	File: 	MemDataSR.h
+	Date:	09/03/2017
+
 	Header file to implement functions to access memory and sort data.
+	And to store the sorted data into a .csv file.
 */
 
 #ifndef MEMDATASR_H_

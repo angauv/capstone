@@ -1,7 +1,11 @@
 /*
-	Memory Read and Data Sorting
-	
-	might want a class for this stuff
+	Author:	Andy Ngauv
+	File:	MemDataSR.cpp
+	Date:	09/03/2017
+
+	Memory Read and Data Sorting source file.
+	Sorts data from a memory location into bins.
+	And creates a .csv of data in day blocks.
 */
 
 #include "MemDataSR.h"
@@ -88,20 +92,17 @@ int getMax(int *data){
 	return max;
 }
 
-// functions checks for existing file and if non exist, creates file
+// functions checks for existing file and returns true if it exists
 bool chkFile(const char *path){
-	ifstream ifs;
-	
-	ifs.open(path, ios::in);
+	ifstream ifs(path); // open file for reading
 
+	// Return true if the file exists otherwise false
 	if (ifs.good()){
 		ifs.close();
-		cout << "File exist!" << endl;
 		return true;
 	}
 	else{
 		ifs.close();
-		cout << "File does not exist!" << endl;
 		return false;
 	}
 }
@@ -109,14 +110,15 @@ bool chkFile(const char *path){
 // Store bin data in a file/database. Returns true if file successfully loaded,
 // false otherwise.
 bool binFile(binData *bin, const char *path){
-	fstream binFile(NULL);
-	string strFile;
+	ofstream binFile(NULL);
+	string strFile;		// filename string
 	strFile.append(to_string(bin->day));
 	strFile += "_" + to_string(bin->month); 
 	strFile += "_" + to_string(bin->year) + ".csv";
 
+	// Check if file exists, if not make new file and add new heading
 	if(!chkFile(strFile.c_str())){
-		binFile.open(strFile.c_str(),ios::in | ios::out | ios::trunc);
+		binFile.open(strFile.c_str(), ios::out);
 		if(binFile.is_open()){		
 			binFile << "Hour,Magnitude,#Events,Timestamp\n"<<endl;
 			binFile.close();
@@ -127,12 +129,11 @@ bool binFile(binData *bin, const char *path){
 		}
 	}
 
+	// Append bin data into .csv file
 	binFile.open(strFile.c_str(), ios::app);
 	if(binFile.is_open()){
-		binFile << bin->hour;
-		binFile << "," << bin->magnitude;
-		binFile << "," << bin->numEvent;
-		binFile << "," << bin->tmStamp << endl;
+		binFile << bin->hour << "," << bin->magnitude << ",";
+		binFile << bin->numEvent << "," << bin->tmStamp << endl;
 		binFile.close();
 	}
 	else{
