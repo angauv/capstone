@@ -31,7 +31,7 @@ int main (void){
 		cout << ".csv file does not exist" << endl;
 	}
 	else{
-		cout << ".csv file created" << endl;
+		cout << ".csv file exists" << endl;
 	}
 
 	return 0;

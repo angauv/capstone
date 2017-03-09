@@ -69,6 +69,10 @@ binData sortBin(int *data){
 			bin.numEvent = 0;
 	}
 
+	bin.day = ltm->tm_mday;
+	bin.month = ltm->tm_mon + 1;
+	bin.year = ltm->tm_year + 1900;
+
 	return bin;
 }
 
@@ -102,7 +106,8 @@ bool chkFile(const char *path){
 	}
 }
 
-// Store bin data in a file/database
+// Store bin data in a file/database. Returns true if file successfully loaded,
+// false otherwise.
 bool binFile(binData *bin, const char *path){
 	fstream binFile(NULL);
 	string strFile;
