@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <iostream>
 #include <ctime>
+#include <string>
 
 typedef struct{
 	int hour;				// hour block
@@ -32,7 +33,10 @@ binData sortBin(int *data);
 // Find and return the largest number in the data array
 int getMax(int *data);
 
-// Sort bin data into a file and return file path;
-char *binFile(binData *bin);
+// Sort bin data into a file and return true if file created, false otherwise;
+bool binFile(binData *bin, const char *path);
+
+// functions checks for existing file
+bool chkFile(const char *path);
 
 #endif

@@ -84,32 +84,55 @@ int getMax(int *data){
 	return max;
 }
 
-// Store bin data in a file/database
-char *binFile(binData *bin){
-	static char *path;
-	if (bin->hour == 0)
-		sprintf(path, "%d_%d_%d.csv", bin->day, bin->month, bin->year);
+// functions checks for existing file and if non exist, creates file
+bool chkFile(const char *path){
+	ifstream ifs;
+	
+	ifs.open(path, ios::in);
 
-	ofstream binFile(NULL);
-
-	chkmkFile(path);
-
-	binFile.open(path,ios::app);
-	binFile << "%d,%d,%d,%s" << bin->hour, bin->magnitude, bin->numEvent, bin->tmStamp << endl;
-	binFile.close;
-
-	return path;
+	if (ifs.good()){
+		ifs.close();
+		cout << "File exist!" << endl;
+		return true;
+	}
+	else{
+		ifs.close();
+		cout << "File does not exist!" << endl;
+		return false;
+	}
 }
 
-void chkmkFile(const char *path){
-	ifstream ifs;
-	ofstream ofs;
+// Store bin data in a file/database
+bool binFile(binData *bin, const char *path){
+	fstream binFile(NULL);
+	string strFile;
+	strFile.append(to_string(bin->day));
+	strFile += "_" + to_string(bin->month); 
+	strFile += "_" + to_string(bin->year) + ".csv";
 
-	if (ifs.open(path, ios::in).good())
-		ifs.close();
-	else{
-		ofs.open(path, ios::out);
-		ofs << "Hour,Magnitude,#Events,Timestamp\n";
-		ofs.close();
+	if(!chkFile(strFile.c_str())){
+		binFile.open(strFile.c_str(),ios::in | ios::out | ios::trunc);
+		if(binFile.is_open()){		
+			binFile << "Hour,Magnitude,#Events,Timestamp\n"<<endl;
+			binFile.close();
+		}
+		else{
+			cout << "File not created" << endl;
+			return false;
+		}
 	}
+
+	binFile.open(strFile.c_str(), ios::app);
+	if(binFile.is_open()){
+		binFile << bin->hour;
+		binFile << "," << bin->magnitude;
+		binFile << "," << bin->numEvent;
+		binFile << "," << bin->tmStamp << endl;
+		binFile.close();
+	}
+	else{
+		cout << "No File to append to" << endl;
+		return false;
+	}
+	return true;
 }
