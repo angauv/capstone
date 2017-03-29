@@ -1,1 +1,5 @@
 Capstone Project Code for BeagleBone Black
+
+Don't use void *memReadSort(const char *path, int *data) function.
+The function is untested therefore I don't actually know what it should be doing 
+or if it should exist in the source file.
