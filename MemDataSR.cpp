@@ -15,42 +15,34 @@
 #include <fstream>
 #include <ctime>
 #include <string>
+#include <vector>
 
 using namespace std;
 
 // constants and variables, put somewhere else after done making .cpp file
 static size_t dataSize = 4; 		// size in bytes of each element to be read
 static size_t bufSize = 2048; 		// number of elements with each of size dataSize
-static int arraySize = 2048;
+static int arraySize = 4096;
 static int memFin = 0; 				// memory read flag
 static int threshold = 512; 		// sample threshold
 
-// Read data from shared memory and make a copy to data buffer then sort it
-// by magnitudes exceeding a threshold.
-void *memReadSort(const char *path, int *data){
-	FILE *shareMem = fopen(path, "r") ; // Connect to shared memory or open memory location
-	int *sample;						// temporarily get samples from memory location
-	
-	if (shareMem == NULL){
-		perror("Error opening file");
-		exit(1);
-	}
-	else{
-		if (fread(sample, dataSize, bufSize, shareMem) != bufSize){
-			perror("Reading error, data buffer is not the specified size");
-			exit(2);
-		}
-	}
-	
-	for (int i = 0; i < arraySize; i++){
-		if (*sample++ > threshold)
-			*data++ = *sample;
+// Read file that contains samples and put it in dynamic buffer
+int memRead(const char *path,vector<int> *buf){
+	ifstream ifs(NULL);
+	if(!chkFile(path)){
+		cout << *path << " File does not exist";
+		return -1;
 	}
 
-	*data = 0; 	// terminate value for array 
+	ifs.open(path);		// File path good so open path
+	int num;
 	
-	fclose(shareMem);
-	memFin = 1;		// indicate that data has been read and sorted
+	while(ifs >> num){
+		buf->push_back(num);
+	}
+
+	ifs.close();
+	return 0;
 }
 
 // Sort the data for an hour block specified by a local time into that bin hour.
@@ -109,28 +101,29 @@ bool chkFile(const char *path){
 
 // Store bin data in a file/database. Returns true if file successfully loaded,
 // false otherwise.
-bool binFile(binData *bin, const char *path){
+bool binFile(binData *bin){
 	ofstream binFile(NULL);
 	string strFile;		// filename string
 	strFile.append(to_string(bin->day));
 	strFile += "_" + to_string(bin->month); 
 	strFile += "_" + to_string(bin->year) + ".csv";
+	bin->filename = strFile.c_str();
 
 	// Check if file exists, if not make new file and add new heading
-	if(!chkFile(strFile.c_str())){
-		binFile.open(strFile.c_str(), ios::out);
+	if(!chkFile(bin->filename)){
+		binFile.open(bin->filename, ios::out);
 		if(binFile.is_open()){		
 			binFile << "Hour,Magnitude,#Events,Timestamp\n"<<endl;
 			binFile.close();
 		}
 		else{
-			cout << "File not created" << endl;
+			cout << "File exists" << endl;
 			return false;
 		}
 	}
 
 	// Append bin data into .csv file
-	binFile.open(strFile.c_str(), ios::app);
+	binFile.open(bin->filename, ios::app);
 	if(binFile.is_open()){
 		binFile << bin->hour << "," << bin->magnitude << ",";
 		binFile << bin->numEvent << "," << bin->tmStamp << endl;
