@@ -15,7 +15,6 @@
 #include <fstream>
 #include <ctime>
 #include <string>
-#include <vector>
 
 using namespace std;
 
@@ -26,22 +25,35 @@ static int arraySize = 4096;
 static int memFin = 0; 				// memory read flag
 static int threshold = 512; 		// sample threshold
 
-// Read file that contains samples and put it in dynamic buffer
-int memRead(const char *path,vector<int> *buf){
+// opens a port and keeps it opens. Returns an ifstream object so user can
+// control when to close the port. 
+ifstream portOpen(const char *path){
 	ifstream ifs(NULL);
 	if(!chkFile(path)){
 		cout << *path << " File does not exist";
+		return ifs;
+	}
+	return ifs.open(path);
+
+}
+
+// Read file stream that contains samples and put it in provided buffer
+int memRead(ifstream ifs,int *buf,size_t len){
+	if (!ifs.is_open()){
+		cout << "File stream not open" << endl;
 		return -1;
 	}
-
-	ifs.open(path);		// File path good so open path
-	int num;
 	
-	while(ifs >> num){
-		buf->push_back(num);
+	for (int i = 0; i < len ; i++) {
+		ifs >> *buf;
+		if (*buf == NULL){
+			cout << "Cannot push data from file stream into buffer" << endl;
+			return -2;
+		}
+		else 
+			buf++;
 	}
 
-	ifs.close();
 	return 0;
 }
 

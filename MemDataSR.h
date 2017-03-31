@@ -33,8 +33,12 @@ typdef struct{
 
 } sampleData;
 
-// Read data samples and store in buffer vector
-int memRead(const char path, vector<int> *buf);
+// opens a port and keeps it opens. Returns an ifstream object so user can
+// control when to close the port. 
+ifstream portOpen(const char *path);
+
+// Read file stream that contains samples and put it in provided buffer
+int memRead(ifstream ifs,int *buf,size_t len);
 
 // Sort the data for an hour block specified by a local time into that bin hour.
 // bin will contain hour block, current timestamp, number of events, and magnitudes 
