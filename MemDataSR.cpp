@@ -15,6 +15,7 @@
 #include <fstream>
 #include <ctime>
 #include <string>
+#include <sstream>
 
 using namespace std;
 
@@ -25,35 +26,36 @@ static int arraySize = 4096;
 static int memFin = 0; 				// memory read flag
 static int threshold = 512; 		// sample threshold
 
-// opens a port and keeps it opens. Returns an ifstream object so user can
-// control when to close the port. 
-ifstream portOpen(const char *path){
-	ifstream ifs(NULL);
+// opens a port and keeps it opens.
+bool portOpen(const char *path){
 	if(!chkFile(path)){
-		cout << *path << " File does not exist";
-		return ifs;
+		cout << *path << " File does not exist" << endl;
+		return false;
 	}
-	return ifs.open(path);
-
+	return true;
 }
 
 // Read file stream that contains samples and put it in provided buffer
-int memRead(ifstream ifs,int *buf,size_t len){
-	if (!ifs.is_open()){
-		cout << "File stream not open" << endl;
+int memRead(std::ifstream& ifs,int *buf,int len){
+	if(!ifs.is_open()){
+		cout << "File stream not connected" << endl;
 		return -1;
 	}
-	
-	for (int i = 0; i < len ; i++) {
-		ifs >> *buf;
-		if (*buf == NULL){
-			cout << "Cannot push data from file stream into buffer" << endl;
-			return -2;
-		}
-		else 
-			buf++;
-	}
 
+	string sampleLine;
+
+	for (int i = 0; i < 2 ; i++){
+		if(ifs.is_open()){
+			while (getline(ifs,sampleLine)){
+				istringstream iss(sampleLine);
+				//while (iss >> *buf++){
+				//	;
+				//}
+			}
+		}
+		else
+			break;
+	}
 	return 0;
 }
 
@@ -101,7 +103,7 @@ bool chkFile(const char *path){
 	ifstream ifs(path); // open file for reading
 
 	// Return true if the file exists otherwise false
-	if (ifs.good()){
+	if (ifs.is_open()){
 		ifs.close();
 		return true;
 	}
