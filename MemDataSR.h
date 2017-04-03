@@ -17,6 +17,7 @@
 #include <ctime>
 #include <string>
 #include <sstream>
+#include <vector>
 
 typedef struct{
 	int hour;				// hour block
@@ -33,7 +34,7 @@ typedef struct{
 bool portOpen(const char *path);
 
 // Read file stream that contains samples and put it in provided buffer
-int memRead(std::ifstream& ifs,int *buf,int len);
+int memRead(std::ifstream& ifs,std::vector<int> &buf,int len);
 
 // Sort the data for an hour block specified by a local time into that bin hour.
 // bin will contain hour block, current timestamp, number of events, and magnitudes 

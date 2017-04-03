@@ -16,6 +16,7 @@
 #include <ctime>
 #include <string>
 #include <sstream>
+#include <vector>
 
 using namespace std;
 
@@ -36,26 +37,29 @@ bool portOpen(const char *path){
 }
 
 // Read file stream that contains samples and put it in provided buffer
-int memRead(std::ifstream& ifs,int *buf,int len){
+int memRead(std::ifstream& ifs,std::vector<int> &buf,int len){
 	if(!ifs.is_open()){
 		cout << "File stream not connected" << endl;
 		return -1;
 	}
 
+	cout << "good: " << ifs.good() << endl;
+	cout << "eof: " << ifs.eof() << endl;
+
 	string sampleLine;
 
-	for (int i = 0; i < 2 ; i++){
-		if(ifs.is_open()){
-			while (getline(ifs,sampleLine)){
-				istringstream iss(sampleLine);
-				//while (iss >> *buf++){
-				//	;
-				//}
+	
+	if(ifs.is_open()){
+		int val;
+		int i = 0;
+		while (getline(ifs,sampleLine)){
+			istringstream iss(sampleLine);
+			while(iss >> val){
+				buf.push_back(val);
 			}
 		}
-		else
-			break;
 	}
+
 	return 0;
 }
 
