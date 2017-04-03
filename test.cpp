@@ -17,7 +17,7 @@ using namespace std;
 int main (void){
 	int buf[8190] = {0};
 	int len = 8199;
-	const char *path = "filetest.csv";
+	const char *path = "testsample.csv";
 	int readStatus = 1; // Memory read status flag
 	vector<int> bufLine;
 
@@ -48,24 +48,23 @@ int main (void){
 	else
 		return -3;
 
-	if (!bufLine.empty())
-		cout << endl << 1 << " " << bufLine[0] << " ";
-	else{
-		cout << "Buffer empty!" << endl;
-		return -4;
-	}
-
-	int x = 2;
+	int x = 1;
+	cout << x << " ";
 
 	for (int i = 1; i < bufLine.size() ; i++){
-		if (bufLine[i] == 1 || bufLine[i] == 9){
-			cout << bufLine[i] << endl;
-			i++;
+		if (i%9 == 0){
+			for (; bufLine[i] == 0; i++);
+			
+			if(bufLine[i] % 10 == 0 || bufLine[i] % 0xa0 == 0){
+				cout << endl;
+				i++;
+			}
 
-			if (bufLine[i] == 0)
-				break;
-			cout << x << " ";
 			x++;
+			cout << x << " ";
+
+			cout << bufLine[i] << " ";
+			i++;
 		}
 		cout << bufLine[i] << " ";
 	}

@@ -53,9 +53,12 @@ int memRead(std::ifstream& ifs,std::vector<int> &buf,int len){
 		int val;
 		int i = 0;
 		while (getline(ifs,sampleLine)){
+			if(i > len)
+				break;
 			istringstream iss(sampleLine);
 			while(iss >> val){
 				buf.push_back(val);
+				i++;
 			}
 		}
 	}
