@@ -48,25 +48,21 @@ int main (void){
 	else
 		return -3;
 
-	int x = 1;
+	int x = 0;
 	cout << x << " ";
 
-	for (int i = 1; i < bufLine.size() ; i++){
+	// Display sampled data to stdout
+	for (int i = 0; i < bufLine.size() ; i++){
 		if (i%9 == 0){
-			for (; bufLine[i] == 0; i++);
-			
-			if(bufLine[i] % 10 == 0 || bufLine[i] % 0xa0 == 0){
-				cout << endl;
-				i++;
-			}
+			cout << endl;
 
 			x++;
 			cout << x << " ";
 
-			cout << bufLine[i] << " ";
-			i++;
+			cout << hex << bufLine[i] << " ";
 		}
-		cout << bufLine[i] << " ";
+		else
+			cout << hex << bufLine[i] << " ";
 	}
 
 	cout << endl;

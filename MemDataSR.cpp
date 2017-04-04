@@ -48,20 +48,28 @@ int memRead(std::ifstream& ifs,std::vector<int> &buf,int len){
 
 	string sampleLine;
 
-	
+	// Push data from file into buffer if the file path is open
 	if(ifs.is_open()){
 		int val;
 		int i = 0;
+
+		// Process file line by line
 		while (getline(ifs,sampleLine)){
 			if(i > len)
 				break;
 			istringstream iss(sampleLine);
-			while(iss >> val){
+			while(iss >> hex >> val){
 				buf.push_back(val);
 				i++;
 			}
 		}
 	}
+
+	// Check and eliminate multiple instances of the same value in a row
+	/*vector<int> temp;
+	for(int i = 0; i < buf.size();i++){
+
+	}*/
 
 	return 0;
 }
