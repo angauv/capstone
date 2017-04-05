@@ -20,43 +20,24 @@
 
 using namespace std;
 
-// constants and variables, put somewhere else after done making .cpp file
-static size_t dataSize = 4; 		// size in bytes of each element to be read
-static size_t bufSize = 2048; 		// number of elements with each of size dataSize
-static int arraySize = 4096;
-static int memFin = 0; 				// memory read flag
-static int threshold = 512; 		// sample threshold
-
-// opens a port and keeps it opens.
-bool portOpen(const char *path){
-	if(!chkFile(path)){
-		cout << *path << " File does not exist" << endl;
-		return false;
-	}
-	return true;
-}
-
 // Read file stream that contains samples and put it in provided buffer
+// assumes file data was dumped by hexdump -d -v command
 int memRead(std::ifstream& ifs,std::vector<int> &buf,int len){
 	if(!ifs.is_open()){
 		cout << "File stream not connected" << endl;
 		return -1;
 	}
 
-	cout << "good: " << ifs.good() << endl;
-	cout << "eof: " << ifs.eof() << endl;
-
-	string sampleLine;
-
 	// Push data from file into buffer if the file path is open
 	if(ifs.is_open()){
 		int val;
 		int i = 0;
+		string sampleLine;
 
 		// Process file line by line
 		while (getline(ifs,sampleLine)){
 			if(i > len)
-				break;
+				break; // Fill buffer up to len
 			istringstream iss(sampleLine);
 			while(iss >> hex >> val){
 				buf.push_back(val);
@@ -64,14 +45,36 @@ int memRead(std::ifstream& ifs,std::vector<int> &buf,int len){
 			}
 		}
 	}
-
-	// Check and eliminate multiple instances of the same value in a row
-	/*vector<int> temp;
-	for(int i = 0; i < buf.size();i++){
-
-	}*/
-
 	return 0;
+}
+
+// Sort sampled data into separate buffers of their respective channel
+// assumes data was originally sorted by hexdump -d -v command
+bool sortSample(Samples *data,vector<int> &buf){
+	vector<int> temp;
+	int x =0;
+	for (int i=1; i < buf.size();i++){
+		if(i%9 == 0){
+			i++;
+			temp.push_back(buf[i]);
+		}
+		else
+			temp.push_back(buf[i]);
+
+		if(x++%2 == 0)
+			data->buf1.push_back(temp.back());
+		else
+			data->buf2.push_back(temp.back());
+	}	
+	
+	/*for (int i = 0 ; i < temp.size();i++){
+		if(i%2 == 0)
+			data->buf1.push_back(temp[i]);
+		else
+			data->buf2.push_back(temp[i]);
+	}
+*/
+	return true;
 }
 
 // Sort the data for an hour block specified by a local time into that bin hour.

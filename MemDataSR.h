@@ -30,11 +30,18 @@ typedef struct{
 	const char *filename;	// .csv filename
 } binData;
 
-// opens a port and keeps it opens.
-bool portOpen(const char *path);
+typedef struct{
+	std::vector<int> buf1;
+	std::vector<int> buf2;
+} Samples;
 
 // Read file stream that contains samples and put it in provided buffer
+// assumes file data was dumped by hexdump -d -v command
 int memRead(std::ifstream& ifs,std::vector<int> &buf,int len);
+
+// Sort sampled data into separate buffers of their respective channel
+// assumes the data was originally sorted by default hexdump -d -v command
+bool sortSample(Samples *data, std::vector<int> &buf);
 
 // Sort the data for an hour block specified by a local time into that bin hour.
 // bin will contain hour block, current timestamp, number of events, and magnitudes 
