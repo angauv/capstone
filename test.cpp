@@ -63,10 +63,10 @@ int main (void){
 			cout << endl;
 			x++;
 			cout << dec << x << " ";
-			cout << hex << bufLine[i] << " ";
+			cout << bufLine[i] << " ";
 		}
 		else
-			cout << hex << bufLine[i] << " ";
+			cout << bufLine[i] << " ";
 	}
 
 	cout << endl;
@@ -78,7 +78,7 @@ int main (void){
 		for (int i = 0; i < samples.buf1.size() ; i++){
 			y++;
 			cout << dec << y << " ";
-			cout << hex << samples.buf1[i] << " " << endl;
+			cout << samples.buf1[i] << " " << endl;
 		}
 
 		cout << endl;
@@ -88,7 +88,7 @@ int main (void){
 		for (int i = 0; i < samples.buf2.size() ; i++){
 			y++;
 			cout << dec << y << " ";
-			cout << hex << samples.buf2[i] << " " << endl;
+			cout << samples.buf2[i] << " " << endl;
 		}
 	}
 

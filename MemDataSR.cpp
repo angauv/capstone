@@ -32,14 +32,16 @@ int memRead(std::ifstream& ifs,std::vector<int> &buf,int len){
 	if(ifs.is_open()){
 		int val;
 		int i = 0;
+		char data[len];
+
 		string sampleLine;
 
 		// Process file line by line
-		while (getline(ifs,sampleLine)){
+		while (getline(ifs.read(data,len),sampleLine)){
 			if(i > len)
 				break; // Fill buffer up to len
 			istringstream iss(sampleLine);
-			while(iss >> hex >> val){
+			while(iss >> val){
 				buf.push_back(val);
 				i++;
 			}
