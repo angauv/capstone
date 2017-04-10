@@ -22,7 +22,7 @@ using namespace std;
 
 // Read file stream that contains samples and put it in provided buffer
 // assumes file data was dumped by hexdump -d -v command
-int memRead(std::ifstream& ifs,std::vector<int> &buf,int len){
+int memRead(std::ifstream& ifs,std::vector<int> &buf,int len, char *bufSample){
 	if(!ifs.is_open()){
 		cout << "File stream not connected" << endl;
 		return -1;
@@ -33,18 +33,13 @@ int memRead(std::ifstream& ifs,std::vector<int> &buf,int len){
 		int val;
 		int i = 0;
 		char data[len];
-
+		int temp[len];
 		string sampleLine;
 
-		// Process file line by line
-		while (getline(ifs.read(data,len),sampleLine)){
-			if(i > len)
-				break; // Fill buffer up to len
-			istringstream iss(sampleLine);
-			while(iss >> val){
-				buf.push_back(val);
-				i++;
-			}
+		ifs.read(data,len);
+
+		for (i = 0; i < len ; i++){
+		    buf.push_back(data[i]);
 		}
 	}
 	return 0;
@@ -55,27 +50,19 @@ int memRead(std::ifstream& ifs,std::vector<int> &buf,int len){
 bool sortSample(Samples *data,vector<int> &buf){
 	vector<int> temp;
 	int x =0;
-	for (int i=1; i < buf.size();i++){
-		if(i%9 == 0){
-			i++;
-			temp.push_back(buf[i]);
+	for (int i=2; i < buf.size();i++){
+		if(i%2 == 0){
+		    temp.push_back(buf[i]);
 		}
-		else
-			temp.push_back(buf[i]);
-
-		if(x++%2 == 0)
-			data->buf1.push_back(temp.back());
-		else
-			data->buf2.push_back(temp.back());
 	}	
 	
-	/*for (int i = 0 ; i < temp.size();i++){
+	for (int i = 0 ; i < temp.size();i++){
 		if(i%2 == 0)
-			data->buf1.push_back(temp[i]);
-		else
 			data->buf2.push_back(temp[i]);
+		else
+			data->buf1.push_back(temp[i]);
 	}
-*/
+
 	return true;
 }
 

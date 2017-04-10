@@ -15,12 +15,13 @@
 using namespace std;
 
 int main (void){
-	int len = 8190;
+	int len = 1024;
 	const char *path = "testsample.csv";
 	const char *port = "/dev/beaglelogic";
-
+	
 	int readStatus = 1; // Memory read status flag
 	vector<int> bufLine;
+	char buf[len] = {0};
 	Samples samples;
 
 	// Check port path
@@ -30,12 +31,12 @@ int main (void){
 	//}
 
 	// check file path
-	if(!chkFile(path)){
+	if(!chkFile(port)){
 		cout << "File stream path not valid" << endl;
 		return -2;
 	}
 
-	ifstream pruPort(path); // open file path
+	ifstream pruPort(port, ios::binary); // open file path
 
 	// check if the path was open again
 	if(!pruPort.is_open()){
@@ -45,7 +46,7 @@ int main (void){
 
 	cout << "File stream is good" << endl;
 
-	readStatus = memRead(pruPort,bufLine,len);
+	readStatus = memRead(pruPort,bufLine,len, buf);
 
 	// check the state of the file reading process
 	if (readStatus == 0)
@@ -63,10 +64,10 @@ int main (void){
 			cout << endl;
 			x++;
 			cout << dec << x << " ";
-			cout << bufLine[i] << " ";
+			cout <<  bufLine[i] << " ";
 		}
 		else
-			cout << bufLine[i] << " ";
+			cout <<  bufLine[i] << " ";
 	}
 
 	cout << endl;

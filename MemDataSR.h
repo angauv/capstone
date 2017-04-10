@@ -37,7 +37,7 @@ typedef struct{
 
 // Read file stream that contains samples and put it in provided buffer
 // assumes file data was dumped by hexdump -d -v command
-int memRead(std::ifstream& ifs,std::vector<int> &buf,int len);
+int memRead(std::ifstream& ifs,std::vector<int> &buf,int len, char* bufSample);
 
 // Sort sampled data into separate buffers of their respective channel
 // assumes the data was originally sorted by default hexdump -d -v command
